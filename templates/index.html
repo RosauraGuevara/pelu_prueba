@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <div class="container">
+    <div class="banner-container">
+        <img src="{{ url_for('static', filename='images/banner.jpeg') }}" alt="Banner" class="banner-image">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-image">
+    </div>
+    <div class="form-container">
         <h1>Agenda tu cita</h1>
         <form action="{{ url_for('agendar') }}" method="post">
             <label for="nombre">Nombre:</label>

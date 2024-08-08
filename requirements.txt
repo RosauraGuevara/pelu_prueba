@@ -2,8 +2,6 @@ asgiref==3.8.1
 blinker==1.8.2
 click==8.1.7
 colorama==0.4.6
-Django==5.0.7
-django-debug-toolbar==4.4.6
 dotenv==0.0.5
 Flask==2.0.3
 Flask-SQLAlchemy==2.5.1

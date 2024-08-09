@@ -7,6 +7,36 @@ body {
     background-size: cover;
     background-position: center;
 }
+
+.alert {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.alert.success {
+    background-color: #d4edda;
+    color: #1a682c;
+    border: 1px solid #c3e6cb;
+    display: flex;
+    justify-content: center;
+    font-size: 70px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+.alert.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: flex;
+    justify-content: center;
+    font-size: 70px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
 .banner-container {
     position: relative;
     width: 100%;

@@ -65,5 +65,12 @@ def agendar():
 def confirmacion():
     return render_template('confirmacion.html')
 
+@app.route('/admin')
+def admin():
+    citas = Cita.query.all()
+    return render_template('admin.html', citas=citas)
+
 if __name__ == '__main__':
     app.run(debug=True)
+
+

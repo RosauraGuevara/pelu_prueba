@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peluquería - Agenda tu cita</title>
+    <title>Lo de Eli</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
 </head>
 <body>
     <div class="banner-container">
-        <img src="{{ url_for('static', filename='images/banner.jpeg') }}" alt="Banner" class="banner-image">
+        <!--<img src="{{ url_for('static', filename='images/banner.jpeg') }}" alt="Banner" class="banner-image"> -->
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-image">
     </div>
     <div class="form-container">
@@ -23,6 +25,12 @@
             <label for="telefono">Teléfono:</label>
             <input type="tel" id="telefono" name="telefono" required>
 
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" name="direccion" required>
+
+            <label for="cumpleanos">Fecha de Cumpleaños:</label>
+            <input type="date" id="cumpleanos" name="cumpleanos" required>
+
             <label for="servicio">Servicio:</label>
             <select id="servicio" name="servicio" required>
                 <option value="Corte de pelo">Corte de pelo</option>
@@ -33,15 +41,34 @@
             </select>
 
             <label for="fecha">Fecha:</label>
-            <input type="date" id="fecha" name="fecha" required>
+            <input type="text" id="fecha" name="fecha" readonly required>
+            <div id='calendar' style="display:none;"></div>
 
             <label for="hora">Hora:</label>
             <input type="time" id="hora" name="hora" required>
 
+            <label for="lugar">Lugar del Servicio:</label>
+            <select id="lugar" name="lugar" required>
+                <option value="Local">En el Local</option>
+                <option value="Domicilio">A Domicilio</option>
+            </select>
+
+            <label for="pago">Forma de Pago:</label>
+            <select id="pago" name="pago" required>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+            </select>
+
+            <div id="transferencia-info" style="display: none;">
+                <p>Datos para la transferencia:</p>
+                <p>Banco: XXXX</p>
+                <p>Cuenta: XXXXXXXX</p>
+            </div>
+
             <button type="submit">Agendar</button>
         </form>
     </div>
-    
+
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

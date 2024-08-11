@@ -13,9 +13,13 @@
                 <th>Cliente</th>
                 <th>Email</th>
                 <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Cumpleaños</th>
                 <th>Servicio</th>
                 <th>Fecha</th>
                 <th>Hora</th>
+                <th>Lugar del Servicio</th>
+                <th>Forma de Pago</th>
             </tr>
         </thead>
         <tbody>
@@ -24,9 +28,13 @@
                 <td>{{ cita.cliente.nombre }}</td>
                 <td>{{ cita.cliente.email }}</td>
                 <td>{{ cita.cliente.telefono }}</td>
+                <td>{{ cita.cliente.direccion }}</td>
+                <td>{{ cita.cliente.cumpleanos }}</td>
                 <td>{{ cita.servicio }}</td>
                 <td>{{ cita.fecha }}</td>
                 <td>{{ cita.hora }}</td>
+                <td>{{ cita.lugar }}</td>
+                <td>{{ cita.cliente.pago }}</td>
             </tr>
             {% endfor %}
         </tbody>

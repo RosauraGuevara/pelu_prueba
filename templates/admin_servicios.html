@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar Servicios</title>
+</head>
+<body>
+    <h1>Administrar Servicios</h1>
+    <form method="POST" action="{{ url_for('admin_servicios') }}">
+        <label for="nombre_servicio">Nombre del Servicio:</label>
+        <input type="text" name="nombre_servicio" id="nombre_servicio">
+        <label for="duracion_servicio">Duración (minutos):</label>
+        <input type="number" name="duracion_servicio" id="duracion_servicio">
+        <button type="submit">Agregar Servicio</button>
+    </form>
+
+    <h2>Servicios Actuales</h2>
+    <ul>
+        {% for servicio in servicios %}
+        <li>{{ servicio.nombre }} - {{ servicio.duracion }} minutos 
+            <form method="POST" action="{{ url_for('eliminar_servicio', id=servicio.id) }}" style="display:inline;">
+                <button type="submit">Eliminar</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <button><a href="{{ url_for('admin') }}">Volver al panel de administración</a></button>
+</body>
+</html>

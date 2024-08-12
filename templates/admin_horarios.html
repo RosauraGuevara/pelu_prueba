@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar Horarios</title>
+</head>
+<body>
+    <h1>Administrar Horarios de Atención</h1>
+    <form method="POST" action="{{ url_for('admin_horarios') }}">
+        <label for="dia">Día:</label>
+        <select name="dia" id="dia">
+            <option value="lunes">Lunes</option>
+            <option value="martes">Martes</option>
+            <option value="miércoles">Miércoles</option>
+            <option value="jueves">Jueves</option>
+            <option value="viernes">Viernes</option>
+            <option value="sábado">Sábado</option>
+            <option value="domingo">Domingo</option>
+        </select>
+        <label for="hora_apertura">Hora de Apertura:</label>
+        <input type="time" name="hora_apertura" id="hora_apertura">
+        <label for="hora_cierre">Hora de Cierre:</label>
+        <input type="time" name="hora_cierre" id="hora_cierre">
+        <button type="submit">Guardar</button>
+    </form>
+
+    <h2>Horarios Actuales</h2>
+    <ul>
+        {% for horario in horarios %}
+        <li>{{ horario.dia }}: {{ horario.hora_apertura }} - {{ horario.hora_cierre }}</li>
+        {% endfor %}
+    </ul>
+
+    <button><a href="{{ url_for('admin') }}">Volver al panel de administración</a></button>
+</body>
+</html>

@@ -5,16 +5,15 @@ import os
 from datetime import datetime
 from flask_migrate import Migrate
 
-load_dotenv()  # Carga las variables de entorno desde el archivo .env
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')  # Asigna la clave secreta
+app.secret_key = os.getenv('SECRET_KEY')
 
-# Configuración de la base de datos Supabase
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)  # Inicializar Migrate después de la base de datos
+migrate = Migrate(app, db)
 
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -108,7 +107,7 @@ def admin():
 def obtener_citas():
     citas = Cita.query.all()
     fechas_ocupadas = {}
-    max_citas_por_dia = 8  # Puedes ajustar este valor según tu capacidad diaria
+    max_citas_por_dia = 8
 
     for cita in citas:
         fecha = cita.fecha
@@ -138,20 +137,66 @@ def obtener_citas():
 @app.route('/admin/horarios', methods=['GET', 'POST'])
 def admin_horarios():
     if request.method == 'POST':
-        # Código para agregar o modificar horarios
-        # Aquí agregarías la lógica para manejar la creación o modificación
-        pass
+        horarios = HorarioAtencion.query.all()
+        dia = request.form['dia']
+        hora_apertura = request.form['hora_apertura']
+        hora_cierre = request.form['hora_cierre']
+
+        horario = HorarioAtencion.query.filter_by(dia=dia).first()
+        if horario:
+            horario.hora_apertura = hora_apertura
+            horario.hora_cierre = hora_cierre
+        else:
+            horario = HorarioAtencion(dia=dia, hora_apertura=hora_apertura, hora_cierre=hora_cierre)
+            db.session.add(horario)
+
+        db.session.commit()
+        flash(f'Horario de {dia} actualizado.', 'success')
+        return redirect(url_for('admin_horarios'))
+
     horarios = HorarioAtencion.query.all()
     return render_template('admin_horarios.html', horarios=horarios)
 
 @app.route('/admin/servicios', methods=['GET', 'POST'])
 def admin_servicios():
     if request.method == 'POST':
-        # Código para agregar o eliminar servicios
-        # Aquí agregarías la lógica para manejar la creación o eliminación
-        pass
+        nombre_servicio = request.form['nombre_servicio']
+        duracion_servicio = int(request.form['duracion_servicio'])
+
+        servicio_existente = Servicio.query.filter_by(nombre=nombre_servicio).first()
+        if servicio_existente:
+            flash(f'El servicio "{nombre_servicio}" ya existe.', 'error')
+        else:
+            nuevo_servicio = Servicio(nombre=nombre_servicio, duracion=duracion_servicio)
+            db.session.add(nuevo_servicio)
+            db.session.commit()
+            flash(f'Servicio "{nombre_servicio}" agregado.', 'success')
+        return redirect(url_for('admin_servicios'))
+
     servicios = Servicio.query.all()
     return render_template('admin_servicios.html', servicios=servicios)
+
+@app.route('/admin/servicios/delete/<int:id>', methods=['POST'])
+def eliminar_servicio(id):
+    servicio = Servicio.query.get(id)
+    if servicio:
+        db.session.delete(servicio)
+        db.session.commit()
+        flash('Servicio eliminado con éxito.', 'success')
+    else:
+        flash('Servicio no encontrado.', 'error')
+    return redirect(url_for('admin_servicios'))
+
+@app.route('/admin/cancelar_cita/<int:id>', methods=['POST'])
+def cancelar_cita(id):
+    cita = Cita.query.get(id)
+    if cita:
+        db.session.delete(cita)
+        db.session.commit()
+        flash('Cita cancelada con éxito.', 'success')
+    else:
+        flash('Cita no encontrada.', 'error')
+    return redirect(url_for('admin'))
 
 
 if __name__ == '__main__':

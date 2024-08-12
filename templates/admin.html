@@ -2,12 +2,19 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <script>
+        function confirmarCancelacion() {
+            return confirm('¿Estás seguro de que deseas cancelar esta cita? Esta acción no se puede deshacer.');
+        }
+    </script>
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_styles.css') }}">
 </head>
 <body id="bodyadmin">
     <h1>Panel de Administración</h1>
-    <table>
+    <button><a href="{{ url_for('admin_servicios') }}">Administrar servicios</a></button><br>
+    <button><a href="{{ url_for('admin_horarios') }}">Administrar horarios de atención</a></button>
+    <table border="1">
         <thead>
             <tr>
                 <th>Cliente</th>
@@ -20,6 +27,7 @@
                 <th>Hora</th>
                 <th>Lugar del Servicio</th>
                 <th>Forma de Pago</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -35,9 +43,15 @@
                 <td>{{ cita.hora }}</td>
                 <td>{{ cita.lugar }}</td>
                 <td>{{ cita.cliente.pago }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('cancelar_cita', id=cita.id) }}" onsubmit="return confirmarCancelacion();">
+                        <button type="submit">Cancelar</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    
 </body>
 </html>

@@ -2,6 +2,8 @@ from flask import Flask, flash, render_template, request, redirect, url_for, jso
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
+from datetime import datetime
+from flask_migrate import Migrate
 
 load_dotenv()  # Carga las variables de entorno desde el archivo .env
 
@@ -12,6 +14,7 @@ app.secret_key = os.getenv('SECRET_KEY')  # Asigna la clave secreta
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)  # Inicializar Migrate después de la base de datos
 
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,6 +35,18 @@ class Cita(db.Model):
     lugar = db.Column(db.String(20), nullable=False)
 
     cliente = db.relationship('Cliente', backref=db.backref('citas', lazy=True))
+
+class HorarioAtencion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    dia = db.Column(db.String(10), nullable=False)  # lunes, martes, etc.
+    hora_apertura = db.Column(db.String(5), nullable=False)  # Ej. "09:00"
+    hora_cierre = db.Column(db.String(5), nullable=False)  # Ej. "22:00"
+
+class Servicio(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    duracion = db.Column(db.Integer, nullable=False)  # Duración en minutos
+
 
 db.create_all()
 
@@ -92,14 +107,52 @@ def admin():
 @app.route('/citas', methods=['GET'])
 def obtener_citas():
     citas = Cita.query.all()
-    citas_json = [
-        {
-            "title": cita.servicio,
-            "start": f"{cita.fecha}T{cita.hora}"
-        }
-        for cita in citas
-    ]
+    fechas_ocupadas = {}
+    max_citas_por_dia = 8  # Puedes ajustar este valor según tu capacidad diaria
+
+    for cita in citas:
+        fecha = cita.fecha
+        if fecha not in fechas_ocupadas:
+            fechas_ocupadas[fecha] = 0
+        fechas_ocupadas[fecha] += 1
+
+    citas_json = []
+    for fecha, conteo in fechas_ocupadas.items():
+        if conteo >= max_citas_por_dia:
+            citas_json.append({
+                "title": "No disponible",
+                "start": f"{fecha}",
+                "display": "background",
+                "color": "red"
+            })
+        else:
+            citas_json.append({
+                "title": "Disponible",
+                "start": f"{fecha}",
+                "display": "background",
+                "color": "green"
+            })
+
     return jsonify(citas_json)
+
+@app.route('/admin/horarios', methods=['GET', 'POST'])
+def admin_horarios():
+    if request.method == 'POST':
+        # Código para agregar o modificar horarios
+        # Aquí agregarías la lógica para manejar la creación o modificación
+        pass
+    horarios = HorarioAtencion.query.all()
+    return render_template('admin_horarios.html', horarios=horarios)
+
+@app.route('/admin/servicios', methods=['GET', 'POST'])
+def admin_servicios():
+    if request.method == 'POST':
+        # Código para agregar o eliminar servicios
+        # Aquí agregarías la lógica para manejar la creación o eliminación
+        pass
+    servicios = Servicio.query.all()
+    return render_template('admin_servicios.html', servicios=servicios)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

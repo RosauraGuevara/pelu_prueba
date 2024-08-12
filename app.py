@@ -137,24 +137,24 @@ def obtener_citas():
 @app.route('/admin/horarios', methods=['GET', 'POST'])
 def admin_horarios():
     if request.method == 'POST':
-        horarios = HorarioAtencion.query.all()
+        horarios = horarioatencion.query.all()
         dia = request.form['dia']
         hora_apertura = request.form['hora_apertura']
         hora_cierre = request.form['hora_cierre']
 
-        horario = HorarioAtencion.query.filter_by(dia=dia).first()
+        horario = horarioatencion.query.filter_by(dia=dia).first()
         if horario:
             horario.hora_apertura = hora_apertura
             horario.hora_cierre = hora_cierre
         else:
-            horario = HorarioAtencion(dia=dia, hora_apertura=hora_apertura, hora_cierre=hora_cierre)
+            horario = horarioatencion(dia=dia, hora_apertura=hora_apertura, hora_cierre=hora_cierre)
             db.session.add(horario)
 
         db.session.commit()
         flash(f'Horario de {dia} actualizado.', 'success')
         return redirect(url_for('admin_horarios'))
 
-    horarios = HorarioAtencion.query.all()
+    horarios = horarioatencion.query.all()
     return render_template('admin_horarios.html', horarios=horarios)
 
 @app.route('/admin/servicios', methods=['GET', 'POST'])

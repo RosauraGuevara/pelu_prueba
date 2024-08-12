@@ -35,7 +35,7 @@ class Cita(db.Model):
 
     cliente = db.relationship('Cliente', backref=db.backref('citas', lazy=True))
 
-class HorarioAtencion(db.Model):
+class horarioatencion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dia = db.Column(db.String(10), nullable=False)  # lunes, martes, etc.
     hora_apertura = db.Column(db.String(5), nullable=False)  # Ej. "09:00"
